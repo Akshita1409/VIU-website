@@ -25,7 +25,7 @@ interface NavbarProps {
   onSelectShow: (showId: string) => void;
   onOpenPremium: () => void;
   onOpenAuth: () => void;
-  user: { name: string; email: string; isPremium: boolean } | null;
+  user: { name: string; email: string; secondaryEmails?: string[]; isPremium: boolean } | null;
   onLogout: () => void;
   onNavigateHome: () => void;
   onNavigateHistory: () => void;
@@ -335,12 +335,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="absolute right-0 mt-2 w-64 bg-[#212121] border border-[#383838] rounded-2xl shadow-2xl py-2 z-50 text-sm">
               <div className="px-4 py-3 border-b border-[#303030]">
                 <p className="font-semibold text-white">{user.name}</p>
-                <p className="text-xs text-[#aaaaaa] truncate">{user.email}</p>
-                <div className="mt-2 flex items-center gap-1.5">
+                <p className="text-xs text-[#aaaaaa] mt-0.5">Primary: {user.email}</p>
+                {user.secondaryEmails && user.secondaryEmails.length > 0 && (
+                  <div className="mt-2 pt-2 border-t border-[#2e2e2e]">
+                    <p className="text-[10px] font-bold text-[#888888] uppercase tracking-wider">
+                      Secondary Contact Emails:
+                    </p>
+                    <div className="text-[11px] text-[#cccccc] space-y-0.5 mt-1 font-mono">
+                      {user.secondaryEmails.map(em => (
+                        <p key={em} className="truncate select-all hover:text-white">{em}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="mt-2.5 flex items-center gap-1.5">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     user.isPremium ? 'bg-[#FFE600] text-black' : 'bg-[#333333] text-[#aaaaaa]'
                   }`}>
-                    {user.isPremium ? '👑 Viu Premium Active' : 'Free Member'}
+                    {user.isPremium ? '👑 ViuStream VIP Active' : 'Free Member'}
                   </span>
                 </div>
               </div>

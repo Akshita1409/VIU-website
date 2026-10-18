@@ -44,9 +44,19 @@ export default function App() {
   const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   // User & Subscription state
-  const [user, setUser] = useState<{ name: string; email: string; isPremium: boolean } | null>({
-    name: 'Akshita Kumar & Team (Lin Xinyu, Vajeeha Farhath, Yaanipha Vetvitoon)',
+  const [user, setUser] = useState<{ 
+    name: string; 
+    email: string; 
+    secondaryEmails?: string[]; 
+    isPremium: boolean 
+  } | null>({
+    name: 'Akshita Kumar & Team',
     email: 'akshita.k.2025@mm.smu.edu.sg',
+    secondaryEmails: [
+      'xinyu.lin.2025@mm.smu.edu.sg',
+      'vajeehaf.mj.2025@mm.smu.edu.sg',
+      'y.vetvitoon.2025@mm.smu.edu.sg'
+    ],
     isPremium: true,
   });
 

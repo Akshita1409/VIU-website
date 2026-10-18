@@ -3,11 +3,12 @@
 **Institution:** Singapore Management University (SMU)  
 **Product Audited:** Viu (modeled under fictional prototype brand **"ViuStream"**)  
 **Audit Date:** October 2026  
-**Project Group Members:**  
-- **Akshita Kumar** (`akshita.k.2025@mm.smu.edu.sg`)  
-- **Lin Xinyu** (`xinyu.lin.2025@mm.smu.edu.sg`)  
-- **Vajeeha Farhath Mohamed Jameel** (`vajeehaf.mj.2025@mm.smu.edu.sg`)  
-- **Yaanipha Vetvitoon** (`y.vetvitoon.2025@mm.smu.edu.sg`)  
+**Project Group Members & Contacts:**  
+- **Lead / Primary Contact:** Akshita Kumar (`akshita.k.2025@mm.smu.edu.sg`)  
+- **Secondary Contact Emails:**  
+  - Lin Xinyu (`xinyu.lin.2025@mm.smu.edu.sg`)  
+  - Vajeeha Farhath Mohamed Jameel (`vajeehaf.mj.2025@mm.smu.edu.sg`)  
+  - Yaanipha Vetvitoon (`y.vetvitoon.2025@mm.smu.edu.sg`)  
 
 ---
 
