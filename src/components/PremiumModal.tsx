@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Crown, Check, Sparkles, AlertTriangle, ShieldCheck, Clock, ArrowRight, BellRing } from 'lucide-react';
+import { X, Crown, Check, Clock, BellRing, Sparkles } from 'lucide-react';
 
 interface PremiumModalProps {
   isOpen: boolean;
@@ -14,19 +14,19 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
   onSubscribe,
   variant,
 }) => {
-  // In Variant A: Pre-selected 12-month annual plan (default effect sludge)
-  // In Variant B: Neutral active choice or explicit selection
+  // In Variant A: Pre-selected 12-month annual plan (Status Quo default bias)
+  // In Variant B: Neutral/flexible active choice
   const [selectedPlan, setSelectedPlan] = useState<'annual' | 'monthly' | null>(
     variant === 'A' ? 'annual' : 'monthly'
   );
 
-  // Variant A fake countdown timer sludge
+  // Variant A commercial urgency countdown
   const [countdown, setCountdown] = useState(299); // 4m 59s
 
   useEffect(() => {
     if (variant === 'A' && isOpen) {
       const timer = setInterval(() => {
-        setCountdown(prev => (prev > 0 ? prev - 1 : 299)); // resets on 0 (classic dark pattern)
+        setCountdown(prev => (prev > 0 ? prev - 1 : 299)); // resets on 0
       }, 1000);
       return () => clearInterval(timer);
     }
@@ -61,33 +61,14 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Behavioral Science Inspector Tag */}
-        <div className="mb-4">
-          {variant === 'A' ? (
-            <div className="flex items-center gap-2 p-2.5 bg-red-950/40 border border-red-500/30 rounded-xl text-red-300 text-xs font-semibold">
-              <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-              <span>
-                <strong>Variant A (Status Quo Sludge):</strong> Manufactured urgency countdown & pre-selected annual lock-in.
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 p-2.5 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs font-semibold">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>
-                <strong>Variant B (Ethical Nudges):</strong> Active choice, Trial Protection reminder guarantee, and honest unit pricing.
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Variant A: Sludge Countdown Urgency Banner */}
+        {/* Variant A: Commercial Urgency Countdown Banner */}
         {variant === 'A' && (
-          <div className="mb-4 p-2.5 bg-red-600 text-white rounded-xl flex items-center justify-between font-bold text-xs shadow-lg animate-pulse">
+          <div className="mb-4 p-2.5 bg-gradient-to-r from-red-600 to-amber-600 text-white rounded-xl flex items-center justify-between font-bold text-xs shadow-lg animate-pulse">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              <span>FLASH OFFER: 27% DISCOUNT ENDS SOON</span>
+              <span>LIMITED OFFER: 27% DISCOUNT ENDS SOON</span>
             </div>
-            <span className="bg-black/40 px-2 py-0.5 rounded font-mono text-sm tracking-wider">
+            <span className="bg-black/50 px-2 py-0.5 rounded font-mono text-xs tracking-wider">
               {formatTimer(countdown)}
             </span>
           </div>
@@ -95,13 +76,13 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
 
         {/* Variant B: Trial Protection Guarantee Banner */}
         {variant === 'B' && (
-          <div className="mb-4 p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-2xl">
+          <div className="mb-4 p-3 bg-[#1e2720] border border-emerald-500/40 rounded-2xl">
             <div className="flex items-center gap-2 text-emerald-300 font-bold text-xs mb-1">
               <BellRing className="w-4 h-4" />
-              <span>100% Transparent Trial Guarantee</span>
+              <span>Trial Protection Guarantee</span>
             </div>
             <p className="text-[11px] text-[#cccccc] leading-snug">
-              We believe in honest streaming. We will send you an email & SMS reminder <strong>2 days before your trial ends</strong> so you never get charged by surprise.
+              We send an email & SMS reminder <strong>2 days before your free trial ends</strong>. If you decide not to continue, cancel in 1 click with zero charges.
             </p>
           </div>
         )}
@@ -124,7 +105,7 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
 
         {/* Plans Selector */}
         <div className="grid grid-cols-2 gap-3 mb-5">
-          {/* Annual */}
+          {/* Annual Plan */}
           <div
             onClick={() => setSelectedPlan('annual')}
             className={`relative p-4 rounded-2xl border-2 transition-all cursor-pointer ${
@@ -152,7 +133,7 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
             </p>
           </div>
 
-          {/* Monthly */}
+          {/* Monthly Plan */}
           <div
             onClick={() => setSelectedPlan('monthly')}
             className={`relative p-4 rounded-2xl border-2 transition-all cursor-pointer ${
@@ -193,6 +174,21 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
             </div>
           </div>
         )}
+
+        {/* Features Checklist */}
+        <div className="space-y-2 mb-5 bg-black/40 p-3.5 rounded-2xl border border-white/5">
+          {features.map((feat, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <div className="w-3.5 h-3.5 rounded-full bg-[#FFE600] text-black flex items-center justify-center shrink-0 mt-0.5">
+                <Check className="w-2.5 h-2.5 stroke-[3]" />
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-white mr-1.5">{feat.title}:</span>
+                <span className="text-[11px] text-[#888888]">{feat.desc}</span>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* CTA Button */}
         <button

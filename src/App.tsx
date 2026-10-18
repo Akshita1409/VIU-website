@@ -254,10 +254,8 @@ export default function App() {
                 </button>
 
                 <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    variant === 'A' ? 'bg-red-950 text-red-300 border border-red-500/30' : 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
-                  }`}>
-                    Active: Variant {variant}
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#242424] text-[#cccccc] border border-white/10">
+                    Variant {variant} Active
                   </span>
                 </div>
               </div>

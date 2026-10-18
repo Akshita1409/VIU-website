@@ -25,7 +25,7 @@
 
 ### Prompt 04 [AK]
 > **Prompt:** "using the following requirements for the project help make it better in terms of its UI website architecture and make it different/unique and then run end to end and give me what all files is required for my project submission: [Attached 6 course slides from MGMT 6108]"
-- **AI Action:** Analyzed syllabus requirements from Prof. Sungjong Roh's slides (Term paper 3,000 words, live prototype with `?v=A` and `?v=B`, consent and debrief screens, fictional brand "ViuStream", and the three mandatory markdown files: `AUDIT.md`, `PROMPTS.md`, and `REFLECTION.md`).
+- **AI Action:** Analyzed course syllabus requirements (Term paper 3,000 words, live prototype with `?v=A` and `?v=B`, consent and debrief screens, fictional brand "ViuStream", and the three mandatory markdown files: `AUDIT.md`, `PROMPTS.md`, and `REFLECTION.md`).
 
 ---
 

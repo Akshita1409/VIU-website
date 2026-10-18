@@ -1,7 +1,6 @@
 # Behavioral Audit: ViuStream Decision Architecture
 **Course:** MGMT 6108 – Leaders as Decision Architects  
 **Institution:** Singapore Management University (SMU)  
-**Instructor:** Prof. Sungjong Roh, PhD  
 **Product Audited:** Viu (modeled under fictional prototype brand **"ViuStream"**)  
 **Audit Date:** October 2026  
 **Auditors:** Group Project Team (Akshita & Team)  

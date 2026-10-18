@@ -88,7 +88,7 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose }) => 
               <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                 Behavioral Audit & Decision Architecture
               </h2>
-              <p className="text-xs text-[#aaaaaa]">Prof. Sungjong Roh, PhD • Singapore Management University</p>
+              <p className="text-xs text-[#aaaaaa]">MGMT 6108 • Singapore Management University</p>
             </div>
           </div>
           <button
