@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { VariantBanner } from './components/VariantBanner';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { CategoryChips } from './components/CategoryChips';
@@ -8,6 +9,9 @@ import { WatchView } from './components/WatchView';
 import { ShortsView } from './components/ShortsView';
 import { PremiumModal } from './components/PremiumModal';
 import { AuthModal } from './components/AuthModal';
+import { ConsentModal } from './components/ConsentModal';
+import { DebriefModal } from './components/DebriefModal';
+import { AuditDrawer } from './components/AuditDrawer';
 import { Toast } from './components/Toast';
 import { VIU_SHOWS } from './data/viuData';
 import { ViuShow } from './types/viu';
@@ -20,16 +24,25 @@ import {
   Play, 
   Tv, 
   Compass,
-  ArrowLeft
+  ArrowLeft,
+  Scale,
+  BookOpen
 } from 'lucide-react';
 
 export default function App() {
+  // Variant switcher state driven by ?v=A vs ?v=B (defaults to B for improved architecture)
+  const [variant, setVariant] = useState<'A' | 'B'>('B');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('home');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Research Modals
+  const [isConsentOpen, setIsConsentOpen] = useState(false);
+  const [isDebriefOpen, setIsDebriefOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
+
   // User & Subscription state
   const [user, setUser] = useState<{ name: string; email: string; isPremium: boolean } | null>({
     name: 'Akshita',
@@ -53,11 +66,34 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Sync URL query param ?v=A vs ?v=B on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get('v');
+      if (v === 'A' || v === 'a') {
+        setVariant('A');
+      } else if (v === 'B' || v === 'b') {
+        setVariant('B');
+      }
+    }
+  }, []);
+
+  const handleSwitchVariant = (newV: 'A' | 'B') => {
+    setVariant(newV);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('v', newV);
+      window.history.pushState({}, '', url.toString());
+    }
+    showToast(`Switched to Variant ${newV}: ${newV === 'A' ? 'Status Quo (Sludge)' : 'Ethical Decision Architecture (Nudged)'}`);
+  };
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage(curr => (curr === msg ? null : curr));
-    }, 3000);
+    }, 3200);
   };
 
   const handleToggleBookmark = (showId: string, e?: React.MouseEvent) => {
@@ -91,7 +127,11 @@ export default function App() {
   const handleSubscribePlan = (plan: string) => {
     setUser(prev => prev ? { ...prev, isPremium: true } : { name: 'VIP Member', email: 'vip@viu.com', isPremium: true });
     setIsPremiumModalOpen(false);
-    showToast(`Subscribed to Viu Premium (${plan})! Enjoy 4K & Ad-free`);
+    showToast(`Trial started (${plan})!`);
+    // Prompt debrief screen for behavioral study participants
+    setTimeout(() => {
+      setIsDebriefOpen(true);
+    }, 1200);
   };
 
   // Filter shows based on category, search, and tab
@@ -142,6 +182,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-[#f1f1f1] flex flex-col antialiased">
+      {/* MGMT 6108 Variant Switcher Banner (?v=A vs ?v=B) */}
+      <VariantBanner
+        variant={variant}
+        onSwitchVariant={handleSwitchVariant}
+        onOpenAudit={() => setIsAuditOpen(true)}
+        onOpenConsent={() => setIsConsentOpen(true)}
+        onOpenDebrief={() => setIsDebriefOpen(true)}
+      />
+
       {/* YouTube Top Navigation Bar */}
       <Navbar
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -153,7 +202,7 @@ export default function App() {
         user={user}
         onLogout={() => {
           setUser(null);
-          showToast('Signed out of Viu');
+          showToast('Signed out of ViuStream');
         }}
         onNavigateHome={() => {
           setSelectedShowId(null);
@@ -171,7 +220,7 @@ export default function App() {
       />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* YouTube Sidebar (hidden when on full WatchView on mobile, or collapsible) */}
+        {/* YouTube Sidebar */}
         {!selectedShowId && (
           <Sidebar
             isOpen={isSidebarOpen}
@@ -191,18 +240,26 @@ export default function App() {
 
         {/* Main Content Area */}
         <main className="flex-1 min-w-0 overflow-y-auto no-scrollbar">
-          {/* Watch View Mode (when user clicks any video card) */}
+          {/* Watch View Mode */}
           {activeShow ? (
             <div>
               {/* Back to Browse Header Button */}
-              <div className="px-4 md:px-6 pt-3 pb-1">
+              <div className="px-4 md:px-6 pt-3 pb-1 flex items-center justify-between">
                 <button
                   onClick={handleBackToFeed}
                   className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-[#aaaaaa] hover:text-[#FFE600] bg-[#1e1e1e] hover:bg-[#282828] px-3 py-1.5 rounded-full border border-[#303030] transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span>Back to Viu Feed</span>
+                  <span>Back to ViuStream Feed</span>
                 </button>
+
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    variant === 'A' ? 'bg-red-950 text-red-300 border border-red-500/30' : 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
+                  }`}>
+                    Active: Variant {variant}
+                  </span>
+                </div>
               </div>
 
               <WatchView
@@ -212,6 +269,7 @@ export default function App() {
                 onToggleBookmark={(id) => handleToggleBookmark(id)}
                 onOpenPremium={() => setIsPremiumModalOpen(true)}
                 onShowToast={showToast}
+                variant={variant}
               />
             </div>
           ) : activeTab === 'shorts' ? (
@@ -333,11 +391,12 @@ export default function App() {
         </main>
       </div>
 
-      {/* Viu Premium VIP Upgrade Modal */}
+      {/* Viu Premium VIP Upgrade Modal (with Variant A / B behavioral logic) */}
       <PremiumModal
         isOpen={isPremiumModalOpen}
         onClose={() => setIsPremiumModalOpen(false)}
         onSubscribe={handleSubscribePlan}
+        variant={variant}
       />
 
       {/* User Login Modal */}
@@ -348,6 +407,30 @@ export default function App() {
           setUser(loggedInUser);
           showToast(`Welcome back, ${loggedInUser.name}!`);
         }}
+      />
+
+      {/* Informed Consent Modal */}
+      <ConsentModal
+        isOpen={isConsentOpen}
+        onClose={() => setIsConsentOpen(false)}
+        onAgree={() => {
+          setIsConsentOpen(false);
+          showToast('Consent recorded for academic research');
+        }}
+      />
+
+      {/* Study Debrief Modal */}
+      <DebriefModal
+        isOpen={isDebriefOpen}
+        onClose={() => setIsDebriefOpen(false)}
+        onSwitchVariant={handleSwitchVariant}
+        currentVariant={variant}
+      />
+
+      {/* Behavioral Audit Inspector Drawer */}
+      <AuditDrawer
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
       />
 
       {/* Action Toast Feedback */}

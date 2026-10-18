@@ -1,6 +1,6 @@
 {
-  "name": "Viu - Asian Dramas, Variety & Movies",
-  "description": "Stream the best of Asian entertainment, Korean dramas, variety shows, and anime in a YouTube-inspired streaming layout.",
+  "name": "ViuStream - Asian Dramas, Variety & Movies",
+  "description": "ViuStream is an ethical decision-architected Asian streaming prototype for SMU MGMT 6108 featuring dual variants (A/B), consent, and debrief screens.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -38,6 +38,7 @@ interface WatchViewProps {
   onToggleBookmark: (showId: string) => void;
   onOpenPremium: () => void;
   onShowToast: (msg: string) => void;
+  variant: 'A' | 'B';
 }
 
 export const WatchView: React.FC<WatchViewProps> = ({
@@ -47,8 +48,10 @@ export const WatchView: React.FC<WatchViewProps> = ({
   onToggleBookmark,
   onOpenPremium,
   onShowToast,
+  variant,
 }) => {
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
+  const [showMindfulBreak, setShowMindfulBreak] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.8);
@@ -313,7 +316,17 @@ export const WatchView: React.FC<WatchViewProps> = ({
                   {/* Next Episode */}
                   <button
                     disabled={currentEpisodeIndex === show.episodes.length - 1}
-                    onClick={() => setCurrentEpisodeIndex(prev => Math.min(show.episodes.length - 1, prev + 1))}
+                    onClick={() => {
+                      if (variant === 'B' && currentEpisodeIndex >= 1) {
+                        setShowMindfulBreak(true);
+                      } else {
+                        setCurrentEpisodeIndex(prev => Math.min(show.episodes.length - 1, prev + 1));
+                        setCurrentTime(0);
+                        if (variant === 'B') {
+                          onShowToast('Mindful streaming: Ep 2 started • Session logged');
+                        }
+                      }
+                    }}
                     title="Next Episode"
                     className="disabled:opacity-30 hover:text-[#FFE600] transition-colors cursor-pointer"
                   >
@@ -877,6 +890,49 @@ export const WatchView: React.FC<WatchViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Mindful Streaming Check-In (Variant B Decision Architecture) */}
+      {showMindfulBreak && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm select-none">
+          <div className="relative w-full max-w-md bg-[#1a1a1a] border border-emerald-500/40 rounded-3xl p-6 text-center shadow-2xl">
+            <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">
+              Variant B • Mindful Architecture
+            </span>
+            <h3 className="text-lg font-bold text-white mt-1 mb-2">
+              Time for a break?
+            </h3>
+            <p className="text-xs text-[#cccccc] leading-relaxed mb-5">
+              You&apos;ve completed 2 continuous episodes (over 2 hours). Would you like to proceed with the next episode, or bookmark it to resume tomorrow?
+            </p>
+            <div className="flex gap-2.5">
+              <button
+                onClick={() => {
+                  setShowMindfulBreak(false);
+                  onToggleBookmark(show.id);
+                  onShowToast('Episode saved to your Watchlist for tomorrow!');
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-[#2a2a2a] hover:bg-[#333333] border border-white/10 text-white font-semibold text-xs cursor-pointer"
+              >
+                Save & Rest
+              </button>
+              <button
+                onClick={() => {
+                  setShowMindfulBreak(false);
+                  setCurrentEpisodeIndex(prev => Math.min(show.episodes.length - 1, prev + 1));
+                  setCurrentTime(0);
+                  setIsPlaying(true);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs cursor-pointer shadow"
+              >
+                Continue Watching
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
