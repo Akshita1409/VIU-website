@@ -1,7 +1,11 @@
 # PROMPTS.md: AI Interaction & Collaboration Log
 **Course:** MGMT 6108 – Leaders as Decision Architects  
 **Project:** ViuStream (Viu Decision Architecture Redesign)  
-**Student/Group Lead:** Akshita (AK)  
+**Group Members:**  
+- **Akshita Kumar [AK]** (`akshita.k.2025@mm.smu.edu.sg`)  
+- **Lin Xinyu [LX]** (`xinyu.lin.2025@mm.smu.edu.sg`)  
+- **Vajeeha Farhath Mohamed Jameel [VF]** (`vajeehaf.mj.2025@mm.smu.edu.sg`)  
+- **Yaanipha Vetvitoon [YV]** (`y.vetvitoon.2025@mm.smu.edu.sg`)  
 **Date:** October 2026  
 
 ---

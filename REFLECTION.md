@@ -1,6 +1,10 @@
 # REFLECTION.md: Critical Evaluation & Pilot Test Reflection
 **Course:** MGMT 6108 – Leaders as Decision Architects  
-**Author:** Akshita & Group  
+**Authors (Group Project):**  
+- **Akshita Kumar** (`akshita.k.2025@mm.smu.edu.sg`)  
+- **Lin Xinyu** (`xinyu.lin.2025@mm.smu.edu.sg`)  
+- **Vajeeha Farhath Mohamed Jameel** (`vajeehaf.mj.2025@mm.smu.edu.sg`)  
+- **Yaanipha Vetvitoon** (`y.vetvitoon.2025@mm.smu.edu.sg`)  
 **Institution:** Singapore Management University (SMU)  
 **Date:** October 2026  
 

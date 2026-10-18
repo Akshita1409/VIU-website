@@ -45,7 +45,7 @@ export default function App() {
 
   // User & Subscription state
   const [user, setUser] = useState<{ name: string; email: string; isPremium: boolean } | null>({
-    name: 'Akshita',
+    name: 'Akshita Kumar & Team (Lin Xinyu, Vajeeha Farhath, Yaanipha Vetvitoon)',
     email: 'akshita.k.2025@mm.smu.edu.sg',
     isPremium: true,
   });
