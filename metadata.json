@@ -1,0 +1,6 @@
+{
+  "name": "Viu - Asian Dramas, Variety & Movies",
+  "description": "Stream the best of Asian entertainment, Korean dramas, variety shows, and anime in a YouTube-inspired streaming layout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
