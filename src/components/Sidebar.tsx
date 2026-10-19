@@ -28,6 +28,7 @@ interface SidebarProps {
   onSelectTab: (tab: string) => void;
   onSelectCategory: (category: string) => void;
   onOpenPremium: () => void;
+  variant?: 'A' | 'B';
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,9 +37,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   onSelectCategory,
   onOpenPremium,
+  variant = 'B',
 }) => {
   const mainItems = [
     { id: 'home', label: 'Home', icon: Home },
+    { id: 'billing', label: 'StreamDemo Premium', icon: Crown, badge: 'SG VIP' },
     { id: 'shorts', label: 'Drama Clips', icon: Film, badge: 'New' },
     { id: 'watchlist', label: 'My Watchlist', icon: Bookmark },
     { id: 'originals', label: 'Viu Originals', icon: Sparkles },
@@ -71,11 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onSelectTab(item.id)}
               className={`flex flex-col items-center justify-center w-16 py-3 rounded-xl transition-all cursor-pointer ${
                 isActive 
-                  ? 'text-[#FFE600] font-semibold bg-[#272727]' 
+                  ? variant === 'B' 
+                    ? 'text-white font-bold bg-[#272727]' 
+                    : 'text-[#FFE600] font-semibold bg-[#272727]'
                   : 'text-[#aaaaaa] hover:text-white hover:bg-[#222222]'
               }`}
             >
-              <Icon className="w-5 h-5 mb-1.5" />
+              <Icon className={`w-5 h-5 mb-1.5 ${isActive && variant === 'B' ? 'text-[#FF0000]' : ''}`} />
               <span className="text-[10px] text-center leading-tight tracking-tight line-clamp-1">{item.label}</span>
             </button>
           );
@@ -85,19 +90,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => onSelectTab('history')}
           className={`flex flex-col items-center justify-center w-16 py-3 rounded-xl transition-all cursor-pointer ${
             activeTab === 'history' 
-              ? 'text-[#FFE600] font-semibold bg-[#272727]' 
+              ? variant === 'B'
+                ? 'text-white font-bold bg-[#272727]'
+                : 'text-[#FFE600] font-semibold bg-[#272727]' 
               : 'text-[#aaaaaa] hover:text-white hover:bg-[#222222]'
           }`}
         >
-          <Clock className="w-5 h-5 mb-1.5" />
+          <Clock className={`w-5 h-5 mb-1.5 ${activeTab === 'history' && variant === 'B' ? 'text-[#FF0000]' : ''}`} />
           <span className="text-[10px] text-center leading-tight">You</span>
         </button>
 
         <button
           onClick={onOpenPremium}
-          className="flex flex-col items-center justify-center w-16 py-3 rounded-xl text-[#FFE600] hover:bg-[#FFE600]/10 transition-all cursor-pointer mt-auto"
+          className={`flex flex-col items-center justify-center w-16 py-3 rounded-xl transition-all cursor-pointer mt-auto ${
+            variant === 'B'
+              ? 'text-white hover:bg-red-500/10'
+              : 'text-[#FFE600] hover:bg-[#FFE600]/10'
+          }`}
         >
-          <Crown className="w-5 h-5 mb-1.5 fill-[#FFE600]/20" />
+          <Crown className={`w-5 h-5 mb-1.5 ${variant === 'B' ? 'fill-red-500/20 text-[#FF0000]' : 'fill-[#FFE600]/20 text-[#FFE600]'}`} />
           <span className="text-[10px] text-center font-bold">Premium</span>
         </button>
       </aside>
@@ -118,16 +129,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onSelectTab(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-colors cursor-pointer ${
                 isActive 
-                  ? 'bg-[#272727] text-[#FFE600] font-bold' 
+                  ? variant === 'B'
+                    ? 'bg-[#272727] text-white font-bold border-l-3 border-[#FF0000]'
+                    : 'bg-[#272727] text-[#FFE600] font-bold' 
                   : 'text-[#f1f1f1] hover:bg-[#222222]'
               }`}
             >
               <div className="flex items-center gap-4">
-                <Icon className={`w-5 h-5 ${isActive ? 'text-[#FFE600]' : 'text-white/80'}`} />
+                <Icon className={`w-5 h-5 ${
+                  isActive 
+                    ? variant === 'B' ? 'text-[#FF0000]' : 'text-[#FFE600]' 
+                    : 'text-white/80'
+                }`} />
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className="bg-[#FFE600] text-black text-[10px] font-black px-1.5 py-0.2 rounded-full uppercase">
+                <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full uppercase ${
+                  variant === 'B' ? 'bg-[#FF0000] text-white' : 'bg-[#FFE600] text-black'
+                }`}>
                   {item.badge}
                 </span>
               )}
@@ -218,20 +237,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Viu Premium Banner */}
-      <div className="my-3 p-3 bg-gradient-to-br from-[#242008] to-[#171717] border border-[#FFE600]/30 rounded-2xl">
-        <div className="flex items-center gap-2 text-[#FFE600] font-bold text-xs mb-1">
-          <Crown className="w-4 h-4 fill-[#FFE600]" />
-          <span>Viu Premium VIP</span>
+      {/* StreamDemo Premium Banner */}
+      <div className="my-3 p-3 rounded-2xl border bg-gradient-to-br from-[#242008] to-[#171717] border-[#FFE600]/30">
+        <div className="flex items-center gap-2 font-bold text-xs mb-1 text-[#FFE600]">
+          <Crown className="w-4 h-4 fill-[#FFE600] text-[#FFE600]" />
+          <span>StreamDemo Premium VIP</span>
         </div>
         <p className="text-[11px] text-[#cccccc] leading-snug mb-2.5">
-          Watch Express simulcast episodes 4 hours after Korea with 0 ads in 1080p FHD!
+          Watch Express simulcasts 4 hours after Korea with 0 ads in 1080p FHD!
         </p>
         <button
           onClick={onOpenPremium}
-          className="w-full py-1.5 bg-[#FFE600] text-black font-bold text-xs rounded-lg hover:brightness-105 transition-all cursor-pointer shadow-md"
+          className="w-full py-1.5 font-bold text-xs rounded-lg hover:brightness-105 transition-all cursor-pointer shadow-md bg-[#FFE600] text-black"
         >
-          Upgrade Now
+          StreamDemo Premium
         </button>
       </div>
 

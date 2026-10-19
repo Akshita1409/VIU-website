@@ -30,6 +30,7 @@ interface NavbarProps {
   onNavigateHome: () => void;
   onNavigateHistory: () => void;
   onNavigateWatchlist: () => void;
+  variant: 'A' | 'B';
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -44,6 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateHome,
   onNavigateHistory,
   onNavigateWatchlist,
+  variant,
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -132,18 +134,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <button 
           onClick={onNavigateHome}
-          className="flex items-center gap-2 group cursor-pointer focus:outline-none"
+          className="flex items-center gap-1.5 group cursor-pointer focus:outline-none"
         >
-          {/* Authentic Viu Yellow Badge */}
-          <div className="relative flex items-center justify-center bg-[#FFE600] text-black font-black px-2.5 py-0.5 rounded-lg text-lg tracking-wider shadow-[0_0_12px_rgba(255,230,0,0.35)] group-hover:brightness-105 transition-all">
-            VIU
+          {/* Authentic StreamDemo Yellow Badge with SG Flag */}
+          <div className="relative flex items-center justify-center bg-[#FFE600] text-black font-black px-2.5 py-0.5 rounded-lg text-base sm:text-lg tracking-wider shadow-[0_0_12px_rgba(255,230,0,0.35)] group-hover:brightness-105 transition-all">
+            StreamDemo
             <span className="absolute -top-1.5 -right-2 bg-red-600 text-[9px] font-bold text-white px-1 py-0.2 rounded leading-none uppercase">
               SG
             </span>
           </div>
-          <span className="hidden sm:inline-block font-bold text-base tracking-tight text-white/90">
-            Stream
-          </span>
         </button>
       </div>
 
@@ -243,13 +242,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right: Actions, Notifications, User */}
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
-        {/* Viu Premium Gold Button */}
+        {/* StreamDemo Premium Gold Button */}
         <button
           onClick={onOpenPremium}
           className="flex items-center gap-1.5 bg-gradient-to-r from-[#FFE600] to-[#F59E0B] hover:from-[#FFF04D] hover:to-[#FBBF24] text-black font-bold text-xs md:text-sm px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(255,230,0,0.25)] transition-all transform hover:scale-[1.02] cursor-pointer"
         >
           <Crown className="w-4 h-4 fill-black shrink-0" />
-          <span className="hidden sm:inline">Viu Premium</span>
+          <span className="hidden sm:inline">StreamDemo Premium</span>
           <span className="sm:hidden">VIP</span>
         </button>
 
@@ -386,10 +385,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-full flex items-center justify-between px-4 py-2 hover:bg-[#282828] text-[#FFE600] font-medium cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <Crown className="w-4 h-4" />
-                    <span>Manage VIP Subscription</span>
+                    <Crown className="w-4 h-4 text-[#FFE600]" />
+                    <span>StreamDemo Member Billing</span>
                   </div>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#FFE600]" />
                 </button>
               </div>
 

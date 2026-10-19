@@ -282,12 +282,16 @@ export const WatchView: React.FC<WatchViewProps> = ({
                   className="absolute left-0 top-0 bottom-0 bg-[#666666] rounded-full" 
                   style={{ width: `${Math.min(100, (currentTime / duration) * 100 + 15)}%` }}
                 />
-                {/* Played bar (Viu Yellow) */}
+                {/* Played bar (YouTube Red in Variant B, Viu Yellow in Variant A) */}
                 <div
-                  className="absolute left-0 top-0 bottom-0 bg-[#FFE600] rounded-full flex items-center justify-end"
+                  className={`absolute left-0 top-0 bottom-0 rounded-full flex items-center justify-end ${
+                    variant === 'B' ? 'bg-[#FF0000]' : 'bg-[#FFE600]'
+                  }`}
                   style={{ width: `${(currentTime / duration) * 100}%` }}
                 >
-                  <div className="w-3.5 h-3.5 rounded-full bg-[#FFE600] ring-2 ring-black shadow-md scale-0 group-hover/bar:scale-100 transition-transform -mr-1.5" />
+                  <div className={`w-3.5 h-3.5 rounded-full ring-2 ring-black shadow-md scale-0 group-hover/bar:scale-100 transition-transform -mr-1.5 ${
+                    variant === 'B' ? 'bg-[#FF0000]' : 'bg-[#FFE600]'
+                  }`} />
                 </div>
               </div>
 
@@ -297,7 +301,9 @@ export const WatchView: React.FC<WatchViewProps> = ({
                   {/* Play / Pause */}
                   <button
                     onClick={handleTogglePlay}
-                    className="hover:text-[#FFE600] transition-colors cursor-pointer"
+                    className={`transition-colors cursor-pointer ${
+                      variant === 'B' ? 'hover:text-[#FF0000]' : 'hover:text-[#FFE600]'
+                    }`}
                     aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
                     {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
@@ -308,7 +314,9 @@ export const WatchView: React.FC<WatchViewProps> = ({
                     disabled={currentEpisodeIndex === 0}
                     onClick={() => setCurrentEpisodeIndex(prev => Math.max(0, prev - 1))}
                     title="Previous Episode"
-                    className="disabled:opacity-30 hover:text-[#FFE600] transition-colors cursor-pointer"
+                    className={`disabled:opacity-30 transition-colors cursor-pointer ${
+                      variant === 'B' ? 'hover:text-[#FF0000]' : 'hover:text-[#FFE600]'
+                    }`}
                   >
                     <SkipBack className="w-4 h-4 fill-current" />
                   </button>
@@ -328,7 +336,9 @@ export const WatchView: React.FC<WatchViewProps> = ({
                       }
                     }}
                     title="Next Episode"
-                    className="disabled:opacity-30 hover:text-[#FFE600] transition-colors cursor-pointer"
+                    className={`disabled:opacity-30 transition-colors cursor-pointer ${
+                      variant === 'B' ? 'hover:text-[#FF0000]' : 'hover:text-[#FFE600]'
+                    }`}
                   >
                     <SkipForward className="w-4 h-4 fill-current" />
                   </button>
@@ -337,7 +347,9 @@ export const WatchView: React.FC<WatchViewProps> = ({
                   <div className="flex items-center gap-1.5 group/vol">
                     <button
                       onClick={() => setIsMuted(!isMuted)}
-                      className="hover:text-[#FFE600] transition-colors cursor-pointer"
+                      className={`transition-colors cursor-pointer ${
+                        variant === 'B' ? 'hover:text-[#FF0000]' : 'hover:text-[#FFE600]'
+                      }`}
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
                     >
                       {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -352,7 +364,9 @@ export const WatchView: React.FC<WatchViewProps> = ({
                         setVolume(parseFloat(e.target.value));
                         setIsMuted(false);
                       }}
-                      className="w-14 sm:w-20 h-1 bg-[#444444] rounded-lg accent-[#FFE600] cursor-pointer"
+                      className={`w-14 sm:w-20 h-1 bg-[#444444] rounded-lg cursor-pointer ${
+                        variant === 'B' ? 'accent-[#FF0000]' : 'accent-[#FFE600]'
+                      }`}
                     />
                   </div>
 

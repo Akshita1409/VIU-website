@@ -7,6 +7,7 @@ interface FeaturedHeroProps {
   onPlay: (showId: string) => void;
   isBookmarked: boolean;
   onToggleBookmark: (showId: string) => void;
+  variant?: 'A' | 'B';
 }
 
 export const FeaturedHero: React.FC<FeaturedHeroProps> = ({
@@ -14,6 +15,7 @@ export const FeaturedHero: React.FC<FeaturedHeroProps> = ({
   onPlay,
   isBookmarked,
   onToggleBookmark,
+  variant = 'B',
 }) => {
   const [isMuted, setIsMuted] = useState(true);
 
@@ -35,15 +37,21 @@ export const FeaturedHero: React.FC<FeaturedHeroProps> = ({
       <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end max-w-2xl">
         {/* Badges */}
         <div className="flex flex-wrap items-center gap-2 mb-2.5">
-          <span className="flex items-center gap-1 bg-[#FFE600] text-black font-extrabold text-[11px] md:text-xs px-2.5 py-1 rounded-md uppercase tracking-wider shadow">
-            <Crown className="w-3.5 h-3.5 fill-black" />
-            #1 IN SINGAPORE
+          <span className={`flex items-center gap-1 font-extrabold text-[11px] md:text-xs px-2.5 py-1 rounded-md uppercase tracking-wider shadow ${
+            variant === 'B'
+              ? 'bg-[#FF0000] text-white shadow-red-600/30'
+              : 'bg-[#FFE600] text-black shadow-[#FFE600]/20'
+          }`}>
+            <Crown className="w-3.5 h-3.5 fill-current" />
+            {variant === 'B' ? '#1 TRENDING STREAM' : '#1 IN SINGAPORE'}
           </span>
           <span className="bg-[#272727]/90 backdrop-blur-md text-[#f1f1f1] border border-white/10 text-[11px] md:text-xs font-semibold px-2.5 py-1 rounded-md">
             {show.category}
           </span>
-          <span className="flex items-center gap-1 text-[#FFE600] text-xs font-bold bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-[#FFE600]/30">
-            <Star className="w-3.5 h-3.5 fill-[#FFE600]" />
+          <span className={`flex items-center gap-1 text-xs font-bold bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border ${
+            variant === 'B' ? 'text-red-400 border-red-500/30' : 'text-[#FFE600] border-[#FFE600]/30'
+          }`}>
+            <Star className={`w-3.5 h-3.5 ${variant === 'B' ? 'fill-red-400' : 'fill-[#FFE600]'}`} />
             {show.rating}
           </span>
           <span className="text-xs text-[#aaaaaa]">
@@ -71,9 +79,13 @@ export const FeaturedHero: React.FC<FeaturedHeroProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => onPlay(show.id)}
-            className="flex items-center gap-2 bg-[#FFE600] hover:bg-[#fff04d] text-black font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-[#FFE600]/25 transition-all transform hover:scale-[1.02] cursor-pointer"
+            className={`flex items-center gap-2 font-bold text-sm px-5 py-2.5 rounded-xl transition-all transform hover:scale-[1.02] cursor-pointer shadow-lg ${
+              variant === 'B'
+                ? 'bg-[#FF0000] hover:bg-red-700 text-white shadow-red-600/30'
+                : 'bg-[#FFE600] hover:bg-[#fff04d] text-black shadow-[#FFE600]/25'
+            }`}
           >
-            <Play className="w-4 h-4 fill-black" />
+            <Play className={`w-4 h-4 ${variant === 'B' ? 'fill-white' : 'fill-black'}`} />
             <span>Play Ep {show.currentEpisode}</span>
           </button>
 
@@ -81,7 +93,9 @@ export const FeaturedHero: React.FC<FeaturedHeroProps> = ({
             onClick={() => onToggleBookmark(show.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
               isBookmarked
-                ? 'bg-white/15 border-white/30 text-[#FFE600]'
+                ? variant === 'B'
+                  ? 'bg-white/15 border-white/30 text-red-400'
+                  : 'bg-white/15 border-white/30 text-[#FFE600]'
                 : 'bg-black/50 hover:bg-black/70 border-white/20 text-white'
             }`}
           >

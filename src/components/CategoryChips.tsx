@@ -5,11 +5,13 @@ import { FILTER_CHIPS } from '../data/viuData';
 interface CategoryChipsProps {
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
+  variant?: 'A' | 'B';
 }
 
 export const CategoryChips: React.FC<CategoryChipsProps> = ({
   selectedCategory,
   onSelectCategory,
+  variant = 'B',
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -64,7 +66,9 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
               onClick={() => onSelectCategory(chip)}
               className={`px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-150 cursor-pointer ${
                 isSelected
-                  ? 'bg-[#FFE600] text-black font-bold shadow-md shadow-[#FFE600]/20'
+                  ? variant === 'B'
+                    ? 'bg-white text-black font-bold shadow-md'
+                    : 'bg-[#FFE600] text-black font-bold shadow-md shadow-[#FFE600]/20'
                   : 'bg-[#272727] text-[#f1f1f1] hover:bg-[#383838]'
               }`}
             >

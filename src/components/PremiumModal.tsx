@@ -91,7 +91,7 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 bg-[#FFE600]/15 border border-[#FFE600]/30 text-[#FFE600] font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-2">
             <Crown className="w-4 h-4 fill-[#FFE600]" />
-            ViuStream VIP Pass
+            StreamDemo Premium VIP Pass
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Unlock Unlimited Asian Entertainment
@@ -210,7 +210,7 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
         {/* Footer Fine Print differences */}
         {variant === 'A' ? (
           <p className="text-[10px] text-center text-[#555555] mt-3">
-            By clicking Start, you authorize ViuStream to charge your card automatically upon trial expiry. Non-refundable. Cancelation requires submitting an inquiry through settings.
+            By clicking Start, you authorize StreamDemo to charge your card automatically upon trial expiry. Non-refundable. Cancelation requires submitting an inquiry through settings.
           </p>
         ) : (
           <div className="flex items-center justify-center gap-4 text-[11px] text-[#aaaaaa] mt-3">
