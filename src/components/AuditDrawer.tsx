@@ -14,64 +14,64 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose }) => 
   const findings = [
     {
       id: 'F-01',
-      title: 'Pre-Selected High-Tier Annual Default',
+      title: 'Pre-Selected 365-Day Plan Default Trap',
       severity: 3,
-      screen: 'Paywall Plan Selection',
-      seesDoes: 'Annual 12-month tier ($69.98) is pre-selected by default; user passively commits to annual billing.',
+      screen: 'StreamDemo Pricing Landing',
+      seesDoes: 'The 365-day annual tier ($107.76) is pre-selected by default with a magenta Recommended badge; user passively clicks Subscribe.',
       principle: 'Default Effect & Status Quo Bias (Thaler & Sunstein, 2008; Johnson & Goldstein, 2003)',
-      mechanism: 'Cognitive inertia; user assumes default is universally optimal. Firm wins short-term cash flow; User loses flexibility.',
-      repair: 'Active Choice Architecture: Neutral selection requiring deliberate consumer intent.'
+      mechanism: 'Cognitive inertia; user assumes default is universally optimal. Firm wins $107.76 upfront cash; User loses flexibility.',
+      repair: 'Active Choice Architecture: Present 30d ($10.98), 90d ($29.94), and 365d ($107.76) plans side-by-side with equal visual weight.'
     },
     {
       id: 'F-02',
-      title: 'Manufactured Urgency (Resetting Countdown)',
-      severity: 4,
-      screen: 'Top Banner of Subscription Screen',
-      seesDoes: 'Flashing countdown timer (04:59) creates artificial scarcity panic, resetting on reload.',
-      principle: 'Artificial Scarcity & Deceptive Urgency Sludge (Cialdini, 2009; Sunstein, 2019; Thaler, 2018)',
-      mechanism: 'Triggers fast System 1 loss aversion panic. Firm wins checkout conversion; User loses deliberate evaluation.',
-      repair: 'Honest Salience: Remove fake countdown entirely. Show authentic unit-price value ($5.83/mo).'
+      title: 'Price Anchoring Distortion ($8.98/mo vs $107.76)',
+      severity: 3,
+      screen: 'Plan Headline & Typography',
+      seesDoes: 'Massive bold headline proclaims "Only $8.98/month", while the $107.76 upfront deduction is buried in small light gray text.',
+      principle: 'Anchoring & Framing Heuristics (Tversky & Kahneman, 1974; Kahneman, 2011)',
+      mechanism: 'Single-digit anchor ($8.98) registers in System 1, masking the triple-digit ($107.76) debit. Firm wins impulse checkout; User miscalculates budget.',
+      repair: 'Dual-Price Salience: Display both total lump sum ($107.76/yr) and monthly breakdown ($8.98/mo) in balanced typography.'
     },
     {
       id: 'F-03',
-      title: 'Opaque Auto-Renewal / Present Bias Trap',
+      title: 'The 24-Hour Trial Cancellation Trap',
       severity: 4,
-      screen: 'Trial Opt-in Fine Print',
-      seesDoes: 'Day 7 renewal date hidden in low-contrast gray text; no automated reminder promised.',
-      principle: 'Salience & Hyperbolic Discounting (Laibson, 1997; O\'Donoghue & Rabin, 1999)',
-      mechanism: 'Immediate present reward ($0 today) blinds user to future cost. Firm wins accidental churn; User loses unexpected charge.',
-      repair: 'Trial Protection Promise: Explicit first-charge date + promised SMS/Email reminder on Day 5.'
+      screen: 'Trial Opt-in Text & Auto-Renewal Notice',
+      seesDoes: 'Notice warns user must cancel at least 24h before trial ends to avoid $107.76 charge, but promises zero reminder alert.',
+      principle: 'Present Bias & Inattention Sludge (Laibson, 1997; Sunstein, 2019; O\'Donoghue & Rabin, 1999)',
+      mechanism: 'Hyperbolic discounting; $0 today feels free while future memory is overestimated. Firm wins accidental renewals; User suffers unexpected charge.',
+      repair: 'Trial Protection Guarantee: Automated SMS & Email reminder sent on Day 5 with a direct 1-click cancel button.'
     },
     {
       id: 'F-04',
-      title: 'Asymmetric Friction (Roach Motel Sludge)',
+      title: 'Shrouded Overseas Bank Surcharges',
       severity: 3,
-      screen: 'Cancellation Flow',
-      seesDoes: 'Subscribing takes 1 click; canceling requires 4-step maze through sub-menus.',
-      principle: 'Asymmetric Friction / Roach Motel (Sunstein, 2019; Luguri & Strahilevitz, 2021)',
-      mechanism: 'Friction asymmetry exploits status quo inertia to trap unengaged users.',
-      repair: 'Symmetric Friction: 1-click self-serve cancellation link displayed right on onboarding.'
+      screen: 'Footer Terms Fine Print',
+      seesDoes: 'Disclaimer states merchant is overseas so bank may charge international transaction fees with zero merchant responsibility.',
+      principle: 'Shrouded Attributes & Hidden Friction (Gabaix & Laibson, 2006; Heidhues et al., 2016)',
+      mechanism: 'Hides true full transaction cost until credit card statement arrives. Firm saves fees; User pays unadvertised 1.5%-3.5% foreign surcharge.',
+      repair: 'Transparent Local Billing: Local Singapore SGD payment processing with 0 overseas fees, 9% GST inclusive.'
     },
     {
       id: 'F-05',
-      title: 'Mindless Autoplay Consumption',
-      severity: 2,
-      screen: 'Episode Watch Page Player',
-      seesDoes: 'Next episode automatically starts after 5 seconds with zero reflective friction.',
-      principle: 'Mindless Eating / Passive Default Consumption (Wansink, 2006; Kahneman, 2011)',
-      mechanism: 'Automaticity removes decision points, displacing sleep and work time.',
-      repair: 'Mindful Session Check-In: Prompt after 2 episodes offering "Save for tomorrow".'
+      title: 'Asymmetric Exit Friction & Forfeiture Policy',
+      severity: 3,
+      screen: 'Cancellation Policy & Account Settings',
+      seesDoes: 'Terms state no refunds for partial or unused periods, paired with multi-step survey barriers to cancel.',
+      principle: 'Asymmetric Friction & Roach Motel Sludge (Luguri & Strahilevitz, 2021; Sunstein, 2021)',
+      mechanism: 'Subscribing takes 1 click; canceling has high friction and guilt-inducing survey steps. Firm wins involuntary retention; User loses autonomy.',
+      repair: 'Symmetric Friction: Direct 1-click self-serve cancellation in profile with access preserved until cycle end.'
     },
     {
       id: 'F-06',
-      title: 'Existing Good Nudge Kept: Clear Content Badges',
+      title: 'Standardized Visual Benefit Strip (Kept Good Nudge)',
       severity: 0,
       isGood: true,
-      screen: 'Video Thumbnail & Watch Metadata',
-      seesDoes: 'Clear [CC] subtitle language tags and 1080p FHD resolution badges shown upfront.',
-      principle: 'Information Salience & Cognitive Ease (Kahneman, 2011)',
-      mechanism: 'Reduces uncertainty and cognitive effort before clicking. Both firm and user win.',
-      repair: 'Retained in Variant B with enhanced high-contrast visual indicators.'
+      screen: 'Bottom Feature Ribbon',
+      seesDoes: 'Clear icons for Unlimited Access, No Video Ads, Video Downloads, Full HD 1080p, Priority Viewing, Multiple Screens.',
+      principle: 'Visual Information Salience & Cognitive Ease (Kahneman, 2011)',
+      mechanism: 'Reduces cognitive load and reading fatigue through standardized visual badges. Both win: User understands value; Firm reduces disputes.',
+      repair: 'Retained in Variant B with enhanced high-contrast visual fidelity.'
     }
   ];
 

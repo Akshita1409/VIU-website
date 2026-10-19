@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { StreamDemoPricingPage } from './components/StreamDemoPricingPage';
 import { VariantBanner } from './components/VariantBanner';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
@@ -7,8 +8,6 @@ import { FeaturedHero } from './components/FeaturedHero';
 import { VideoCard } from './components/VideoCard';
 import { WatchView } from './components/WatchView';
 import { ShortsView } from './components/ShortsView';
-import { MemberBillingPage } from './components/MemberBillingPage';
-import { PremiumModal } from './components/PremiumModal';
 import { AuthModal } from './components/AuthModal';
 import { ConsentModal } from './components/ConsentModal';
 import { DebriefModal } from './components/DebriefModal';
@@ -27,10 +26,14 @@ import {
   Compass,
   ArrowLeft,
   Scale,
-  BookOpen
+  BookOpen,
+  Crown
 } from 'lucide-react';
 
 export default function App() {
+  // Main view defaults to 'pricing' as requested: focus on pricing plans modeled after Viu
+  const [currentView, setCurrentView] = useState<'pricing' | 'catalog'>('pricing');
+  
   // Variant switcher state driven by ?v=A vs ?v=B (defaults to B for improved architecture)
   const [variant, setVariant] = useState<'A' | 'B'>('B');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -72,12 +75,10 @@ export default function App() {
     { showId: 'taxi-driver-2', progress: 95 },
   ]);
 
-  // Modals state
-  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Sync URL query params on load: ?v=A vs ?v=B and ?entry=MEMBER_CENTER
+  // Sync URL query params on load: ?v=A vs ?v=B
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -88,9 +89,9 @@ export default function App() {
         setVariant('B');
       }
 
-      const entry = params.get('entry');
-      if (entry === 'MEMBER_CENTER' || entry === 'member_center') {
-        setActiveTab('billing');
+      const view = params.get('view');
+      if (view === 'catalog') {
+        setCurrentView('catalog');
       }
     }
   }, []);
@@ -129,7 +130,6 @@ export default function App() {
 
   const handleSelectShow = (showId: string) => {
     setSelectedShowId(showId);
-    // Add to history
     setWatchHistory(prev => {
       const filtered = prev.filter(h => h.showId !== showId);
       return [{ showId, progress: 10 }, ...filtered];
@@ -140,21 +140,9 @@ export default function App() {
     setSelectedShowId(null);
   };
 
-  const handleOpenBilling = () => {
-    setActiveTab('billing');
-    setSelectedShowId(null);
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      url.searchParams.set('entry', 'MEMBER_CENTER');
-      window.history.pushState({}, '', url.toString());
-    }
-  };
-
-  const handleSubscribePlan = (plan: string) => {
+  const handleSubscribePlan = (planTitle: string, price: string) => {
     setUser(prev => prev ? { ...prev, isPremium: true } : { name: 'VIP Member', email: 'vip@streamdemo.com', isPremium: true });
-    setIsPremiumModalOpen(false);
-    showToast(`Trial started (${plan})!`);
-    // Prompt debrief screen for behavioral study participants
+    showToast(`Started trial for ${planTitle} (${price})!`);
     setTimeout(() => {
       setIsDebriefOpen(true);
     }, 1200);
@@ -163,7 +151,6 @@ export default function App() {
   // Filter shows based on category, search, and tab
   const filteredShows = useMemo(() => {
     return VIU_SHOWS.filter(show => {
-      // Search query filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchesTitle = show.title.toLowerCase().includes(q);
@@ -175,18 +162,10 @@ export default function App() {
         }
       }
 
-      // Tab specific views
-      if (activeTab === 'watchlist') {
-        return bookmarkedIds.has(show.id);
-      }
-      if (activeTab === 'originals') {
-        return show.category === 'Viu Original';
-      }
-      if (activeTab === 'history') {
-        return watchHistory.some(h => h.showId === show.id);
-      }
+      if (activeTab === 'watchlist') return bookmarkedIds.has(show.id);
+      if (activeTab === 'originals') return show.category === 'Viu Original';
+      if (activeTab === 'history') return watchHistory.some(h => h.showId === show.id);
 
-      // Category chip filter on Home
       if (selectedCategory === 'All') return true;
       if (selectedCategory === 'Korean Dramas') return show.category === 'Korean Drama';
       if (selectedCategory === 'K-Variety') return show.category === 'K-Variety';
@@ -197,7 +176,7 @@ export default function App() {
       if (selectedCategory === 'Free to Watch') return !show.isPremium;
       if (selectedCategory === 'Top 10 Today') return show.rating >= 9.7;
       if (selectedCategory === 'Romance') return show.genre.includes('Romance');
-      if (selectedCategory === 'Action & Thriller') return show.genre.includes('Action') || show.genre.includes('Thriller') || show.genre.includes('Legal Thriller');
+      if (selectedCategory === 'Action & Thriller') return show.genre.includes('Action') || show.genre.includes('Thriller');
       if (selectedCategory === 'Completed') return show.currentEpisode >= show.totalEpisodes;
 
       return true;
@@ -207,206 +186,145 @@ export default function App() {
   const activeShow = selectedShowId ? VIU_SHOWS.find(s => s.id === selectedShowId) || VIU_SHOWS[0] : null;
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-[#f1f1f1] flex flex-col antialiased">
-      {/* MGMT 6108 Variant Switcher Banner (?v=A vs ?v=B) */}
-      <VariantBanner
-        variant={variant}
-        onSwitchVariant={handleSwitchVariant}
-        onOpenAudit={() => setIsAuditOpen(true)}
-        onOpenConsent={() => setIsConsentOpen(true)}
-        onOpenDebrief={() => setIsDebriefOpen(true)}
-      />
-
-      {/* StreamDemo Top Navigation Bar */}
-      <Navbar
-        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onSelectShow={handleSelectShow}
-        onOpenPremium={handleOpenBilling}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        user={user}
-        onLogout={() => {
-          setUser(null);
-          showToast('Signed out of StreamDemo');
-        }}
-        onNavigateHome={() => {
-          setSelectedShowId(null);
-          setActiveTab('home');
-          setSelectedCategory('All');
-          if (typeof window !== 'undefined') {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('entry');
-            window.history.pushState({}, '', url.toString());
-          }
-        }}
-        onNavigateHistory={() => {
-          setSelectedShowId(null);
-          setActiveTab('history');
-        }}
-        onNavigateWatchlist={() => {
-          setSelectedShowId(null);
-          setActiveTab('watchlist');
-        }}
-        variant={variant}
-      />
-
-      {/* Main App Body */}
-      {activeTab === 'billing' ? (
-        /* Recreated Viu Premium Singapore Member Center & Billing Page */
-        <MemberBillingPage
-          onBackToStream={() => {
-            setActiveTab('home');
-            if (typeof window !== 'undefined') {
-              const url = new URL(window.location.href);
-              url.searchParams.delete('entry');
-              window.history.pushState({}, '', url.toString());
-            }
-          }}
-          user={user}
-          onUpdateSubscription={(isPrem, planName) => {
-            setUser(prev => prev ? { ...prev, isPremium: isPrem } : null);
-            if (isPrem) {
-              setTimeout(() => setIsDebriefOpen(true), 1200);
-            }
-          }}
+    <div className="min-h-screen bg-[#fcfcfc] text-[#1a1a1a] flex flex-col antialiased">
+      {/* PRIMARY VIEW: StreamDemo Pricing (Baseline Recreating https://www.viu.com/ott/sg/en/premium) */}
+      {currentView === 'pricing' ? (
+        <StreamDemoPricingPage
           variant={variant}
+          onSwitchVariant={handleSwitchVariant}
+          onOpenAudit={() => setIsAuditOpen(true)}
+          onOpenConsent={() => setIsConsentOpen(true)}
+          onOpenDebrief={() => setIsDebriefOpen(true)}
+          onPreviewCatalog={() => setCurrentView('catalog')}
+          user={user}
+          onSubscribe={handleSubscribePlan}
           onShowToast={showToast}
         />
       ) : (
-        <div className="flex flex-1 overflow-hidden">
-          {/* StreamDemo Sidebar */}
-          {!selectedShowId && (
-            <Sidebar
-              isOpen={isSidebarOpen}
-              activeTab={activeTab}
-              onSelectTab={(tab) => {
-                if (tab === 'billing') {
-                  handleOpenBilling();
-                } else {
-                  setActiveTab(tab);
+        /* SECONDARY VIEW: Streaming Video Catalog & Mindful Break Player */
+        <div className="min-h-screen bg-[#0f0f0f] text-[#f1f1f1] flex flex-col">
+          {/* Top Switcher Banner */}
+          <VariantBanner
+            variant={variant}
+            onSwitchVariant={handleSwitchVariant}
+            onOpenAudit={() => setIsAuditOpen(true)}
+            onOpenConsent={() => setIsConsentOpen(true)}
+            onOpenDebrief={() => setIsDebriefOpen(true)}
+          />
+
+          {/* Catalog Top Return Bar */}
+          <div className="bg-[#1c1c1c] border-b border-[#2e2e2e] px-4 md:px-8 py-2.5 flex items-center justify-between text-xs">
+            <button
+              onClick={() => setCurrentView('pricing')}
+              className="flex items-center gap-2 text-[#FFE600] font-bold hover:underline cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to StreamDemo Pricing Plans</span>
+            </button>
+            <span className="text-[#888888]">
+              Catalog Preview Mode (Test episode autoplay & mindful pauses)
+            </span>
+          </div>
+
+          <Navbar
+            onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onSelectShow={handleSelectShow}
+            onOpenPremium={() => setCurrentView('pricing')}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            user={user}
+            onLogout={() => {
+              setUser(null);
+              showToast('Signed out of StreamDemo');
+            }}
+            onNavigateHome={() => {
+              setSelectedShowId(null);
+              setActiveTab('home');
+              setSelectedCategory('All');
+            }}
+            onNavigateHistory={() => {
+              setSelectedShowId(null);
+              setActiveTab('history');
+            }}
+            onNavigateWatchlist={() => {
+              setSelectedShowId(null);
+              setActiveTab('watchlist');
+            }}
+            variant={variant}
+          />
+
+          <div className="flex flex-1 overflow-hidden">
+            {!selectedShowId && (
+              <Sidebar
+                isOpen={isSidebarOpen}
+                activeTab={activeTab}
+                onSelectTab={(tab) => {
+                  if (tab === 'billing') {
+                    setCurrentView('pricing');
+                  } else {
+                    setActiveTab(tab);
+                    setSelectedShowId(null);
+                  }
+                }}
+                onSelectCategory={(cat) => {
+                  setSelectedCategory(cat);
+                  setActiveTab('home');
                   setSelectedShowId(null);
-                }
-              }}
-              onSelectCategory={(cat) => {
-                setSelectedCategory(cat);
-                setActiveTab('home');
-                setSelectedShowId(null);
-              }}
-              onOpenPremium={handleOpenBilling}
-              variant={variant}
-            />
-          )}
+                }}
+                onOpenPremium={() => setCurrentView('pricing')}
+                variant={variant}
+              />
+            )}
 
-          {/* Main Content Area */}
-          <main className="flex-1 min-w-0 overflow-y-auto no-scrollbar">
-            {/* Watch View Mode */}
-            {activeShow ? (
-              <div>
-                {/* Back to Browse Header Button */}
-                <div className="px-4 md:px-6 pt-3 pb-1 flex items-center justify-between">
-                  <button
-                    onClick={handleBackToFeed}
-                    className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-[#aaaaaa] hover:text-[#FFE600] bg-[#1e1e1e] hover:bg-[#282828] px-3 py-1.5 rounded-full border border-[#303030] transition-colors cursor-pointer"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>Back to StreamDemo Catalog</span>
-                  </button>
-
-                  <div className="flex items-center gap-2">
+            <main className="flex-1 min-w-0 overflow-y-auto no-scrollbar">
+              {activeShow ? (
+                <div>
+                  <div className="px-4 md:px-6 pt-3 pb-1 flex items-center justify-between">
+                    <button
+                      onClick={handleBackToFeed}
+                      className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-[#aaaaaa] hover:text-[#FFE600] bg-[#1e1e1e] hover:bg-[#282828] px-3 py-1.5 rounded-full border border-[#303030] transition-colors cursor-pointer"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      <span>Back to Catalog Grid</span>
+                    </button>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#242424] text-[#cccccc] border border-white/10">
                       Variant {variant} Active
                     </span>
                   </div>
+
+                  <WatchView
+                    show={activeShow}
+                    onSelectShow={handleSelectShow}
+                    isBookmarked={bookmarkedIds.has(activeShow.id)}
+                    onToggleBookmark={(id) => handleToggleBookmark(id)}
+                    onOpenPremium={() => setCurrentView('pricing')}
+                    onShowToast={showToast}
+                    variant={variant}
+                  />
                 </div>
-
-                <WatchView
-                  show={activeShow}
+              ) : activeTab === 'shorts' ? (
+                <ShortsView
                   onSelectShow={handleSelectShow}
-                  isBookmarked={bookmarkedIds.has(activeShow.id)}
-                  onToggleBookmark={(id) => handleToggleBookmark(id)}
-                  onOpenPremium={handleOpenBilling}
                   onShowToast={showToast}
-                  variant={variant}
                 />
-              </div>
-            ) : activeTab === 'shorts' ? (
-              /* Drama Shorts Mode */
-              <ShortsView
-                onSelectShow={handleSelectShow}
-                onShowToast={showToast}
-              />
-            ) : (
-              /* Standard Grid Feed */
-              <div>
-                {/* Category Chips Bar */}
-                <CategoryChips
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={setSelectedCategory}
-                />
+              ) : (
+                <div>
+                  <CategoryChips
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={setSelectedCategory}
+                  />
 
-                <div className="p-4 sm:p-6 md:p-8 max-w-[1800px] mx-auto">
-                  {/* Watchlist Tab Header */}
-                  {activeTab === 'watchlist' && (
-                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#272727]">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-2xl bg-[#FFE600]/15 text-[#FFE600] border border-[#FFE600]/30">
-                          <Bookmark className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <h1 className="text-xl sm:text-2xl font-bold text-white">My Watchlist</h1>
-                          <p className="text-xs text-[#aaaaaa]">{bookmarkedIds.size} saved series</p>
-                        </div>
-                      </div>
-                      {bookmarkedIds.size > 0 && (
-                        <button
-                          onClick={() => {
-                            setBookmarkedIds(new Set());
-                            showToast('Cleared watchlist');
-                          }}
-                          className="flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 cursor-pointer"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span>Clear All</span>
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  <div className="p-4 sm:p-6 md:p-8 max-w-[1800px] mx-auto">
+                    {activeTab === 'home' && selectedCategory === 'All' && !searchQuery.trim() && (
+                      <FeaturedHero
+                        show={VIU_SHOWS[0]}
+                        onPlay={handleSelectShow}
+                        isBookmarked={bookmarkedIds.has(VIU_SHOWS[0].id)}
+                        onToggleBookmark={(id) => handleToggleBookmark(id)}
+                      />
+                    )}
 
-                  {/* History Tab Header */}
-                  {activeTab === 'history' && (
-                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#272727]">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-2xl bg-[#FFE600]/15 text-[#FFE600] border border-[#FFE600]/30">
-                          <Clock className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <h1 className="text-xl sm:text-2xl font-bold text-white">Watch History</h1>
-                          <p className="text-xs text-[#aaaaaa]">Resume watching where you left off</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Featured Hero Banner on Home Page (when viewing 'All' and not searching) */}
-                  {activeTab === 'home' && selectedCategory === 'All' && !searchQuery.trim() && (
-                    <FeaturedHero
-                      show={VIU_SHOWS[0]}
-                      onPlay={handleSelectShow}
-                      isBookmarked={bookmarkedIds.has(VIU_SHOWS[0].id)}
-                      onToggleBookmark={(id) => handleToggleBookmark(id)}
-                    />
-                  )}
-
-                  {/* Search Result Banner */}
-                  {searchQuery.trim() && (
-                    <div className="mb-4 text-sm text-[#aaaaaa]">
-                      Showing search results for &quot;<span className="text-white font-semibold">{searchQuery}</span>&quot; ({filteredShows.length} titles)
-                    </div>
-                  )}
-
-                  {/* Main Video Grid */}
-                  {filteredShows.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-8">
                       {filteredShows.map(show => {
                         const historyItem = watchHistory.find(h => h.showId === show.id);
@@ -422,41 +340,13 @@ export default function App() {
                         );
                       })}
                     </div>
-                  ) : (
-                    <div className="text-center py-16 max-w-md mx-auto">
-                      <div className="w-16 h-16 rounded-full bg-[#222222] text-[#FFE600] flex items-center justify-center mx-auto mb-4 border border-[#333333]">
-                        <Tv className="w-8 h-8" />
-                      </div>
-                      <h3 className="font-bold text-lg text-white mb-1">No shows found</h3>
-                      <p className="text-xs sm:text-sm text-[#aaaaaa] mb-4">
-                        We couldn&apos;t find anything matching your filter. Try exploring our popular Korean Dramas or resetting filters.
-                      </p>
-                      <button
-                        onClick={() => {
-                          setSelectedCategory('All');
-                          setSearchQuery('');
-                          setActiveTab('home');
-                        }}
-                        className="px-4 py-2 bg-[#FFE600] text-black font-bold text-xs rounded-xl hover:brightness-105 transition-all cursor-pointer shadow"
-                      >
-                        Reset All Filters
-                      </button>
-                    </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </main>
+              )}
+            </main>
+          </div>
         </div>
       )}
-
-      {/* StreamDemo Premium VIP Upgrade Modal (with Variant A / B behavioral logic) */}
-      <PremiumModal
-        isOpen={isPremiumModalOpen}
-        onClose={() => setIsPremiumModalOpen(false)}
-        onSubscribe={handleSubscribePlan}
-        variant={variant}
-      />
 
       {/* User Login Modal */}
       <AuthModal
